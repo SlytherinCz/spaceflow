@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Employee;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +18,19 @@ class EmployeeRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Employee::class);
+    }
+
+    public function findByMonthAndDay(int $month, int $day): ArrayCollection
+    {
+        return new ArrayCollection(
+            $this->createQueryBuilder('employee')
+            ->andWhere('month(employee.anniversaryDate) = :month')
+            ->andWhere('day(employee.anniversaryDate) = :day')
+            ->setParameter(':month',$month)
+            ->setParameter(':day',$day)
+            ->getQuery()
+            ->getResult()
+        );
     }
 
     // /**

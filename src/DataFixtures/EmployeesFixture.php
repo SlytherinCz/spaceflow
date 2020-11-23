@@ -16,7 +16,7 @@ class EmployeesFixture extends Fixture
     {
         $lastNewYears = new \DateTimeImmutable(date("Y") -10 . "-01-01");
         $this->faker = Factory::create();
-        for ($i = 0; $i <= 21000; $i++) {
+        for ($i = 0; $i <= 2000; $i++) {
             $employeesAnniversary = $lastNewYears->add(date_interval_create_from_date_string($i . " days"));
             $employee = new Employee();
             $employee->setAnniversaryDate($employeesAnniversary);

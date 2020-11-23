@@ -13,6 +13,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Employee
 {
+    public const NAME_FIELD = 'name';
+
+    public const ANNIVERSARY_FIELD = 'anniversaryDate';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -67,7 +71,7 @@ class Employee
         return [
             "id" => $this->getId(),
             "name" => $this->getName(),
-            "anniversaryDate" => $this->getAnniversaryDate()
+            "anniversaryDate" => $this->getAnniversaryDate()->format("Y-m-d")
         ];
     }
 }

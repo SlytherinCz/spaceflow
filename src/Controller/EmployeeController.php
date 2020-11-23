@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Employee;
 use App\Service\Employee\EmployeeFactoryService;
 use App\Service\Employee\EmployeeListService;
-use App\Service\EntityValidator\InvalidEntityException;
+use App\Service\Employee\InvalidInputException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -42,7 +42,7 @@ class EmployeeController extends AbstractController
      */
     public function list(Request $request): Response
     {
-        return $this->json($this->listService->getList($request));
+        return new JsonResponse($this->listService->getList($request));
     }
 
     /**
@@ -88,7 +88,18 @@ class EmployeeController extends AbstractController
         if (!$employee instanceof Employee) {
             return new Response(null, Response::HTTP_NOT_FOUND);
         }
-        return new JsonResponse($employee, Response::HTTP_OK);
+        try {
+            $employee = $this->factory->updateByRequest($employee, $request);
+            $this->entityManager->persist($employee);
+            $this->entityManager->flush();
+            return new JsonResponse($employee->toPublicFieldsArray(), Response::HTTP_OK);
+        } catch (ORMException $e) {
+            return new Response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (InvalidInputException $e) {
+            return new JsonResponse($e->getViolationMessages(), Response::HTTP_BAD_REQUEST);
+        } catch (\JsonException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
@@ -102,11 +113,13 @@ class EmployeeController extends AbstractController
             $employee = $this->factory->createFromRequest($request);
             $this->entityManager->persist($employee);
             $this->entityManager->flush();
-        } catch (InvalidEntityException $e) {
-            return new JsonResponse($e->toArray(), Response::HTTP_BAD_REQUEST);
         } catch (ORMException $e) {
             return new Response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (InvalidInputException $e) {
+            return new JsonResponse($e->getViolationMessages(), Response::HTTP_BAD_REQUEST);
+        } catch (\JsonException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-        return new JsonResponse($employee, Response::HTTP_OK);
+        return new JsonResponse($employee->toPublicFieldsArray(), Response::HTTP_OK);
     }
 }
