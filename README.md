@@ -3,6 +3,11 @@
 * build `docker build -t spaceflow .`
 * run `docker run -p 8181:8181 --ulimit memlock=1024000 spaceflow:latest`
 
+Dont forget to set `SLACK_WEBHOOK_URL` env variable, either through docker
+or via dotenv file, otherwise the console command fails.
+
+https://api.slack.com/messaging/webhooks#posting_with_webhooks
+
 Visit http://localhost:8181/employees for API
 
 There are five endpoints
@@ -11,6 +16,7 @@ There are five endpoints
 * CREATE at POST http://localhost:8181/employees/{id}
 * UPDATE at PUT http://localhost:8181/employees/{id}
 * DELETE at DELETE http://localhost:8181/employees/{id}
+
 
 
 
