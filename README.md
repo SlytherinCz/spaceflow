@@ -4,7 +4,7 @@
 * run `docker run -p 8181:8181 --ulimit memlock=1024000 spaceflow:latest`
 
 Dont forget to set `SLACK_WEBHOOK_URL` env variable, either through docker
-or via dotenv file, otherwise the console command fails.
+or via dotenv file (before build), otherwise the console command fails.
 
 https://api.slack.com/messaging/webhooks#posting_with_webhooks
 
@@ -21,6 +21,12 @@ There are five endpoints
 
 
 Code coverage is at http://localhost:8181/code-coverage
+
+
+To run the command, first find the name of your container with `docker ps`
+
+then run the command like so
+`docker exec <your_container_name> /application/bin/console app:notify:anniversary $(date +"%Y-%m-%d")`
 
 ### Few notes
 
