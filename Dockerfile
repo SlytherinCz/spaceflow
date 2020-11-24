@@ -24,7 +24,7 @@ FROM php:7.4-cli-alpine3.12 as dev
 WORKDIR /application
 
 COPY --from=builder /application .
-
+COPY --from=tester /apllication/public/code-coverage ./public/code-coverage
 RUN apk add --no-cache &&\
     docker-php-ext-install sockets &&\
     vendor/bin/rr get-binary --location bin/ &&\

@@ -18,9 +18,7 @@ There are five endpoints
 * DELETE at DELETE http://localhost:8181/employees/{id}
 
 
-
-
-Code coverage is at http://localhost:8181/code-coverage
+Code coverage is at http://localhost:8181/code-coverage/index.html
 
 
 To run the command, first find the name of your container with `docker ps`
